@@ -1,0 +1,90 @@
+//
+// Created by polya on 7/19/24.
+//
+
+#include "potentialFunctionPrototype.hpp"
+
+class V_inv_12_6:public potentialFunction {
+
+public:
+    V_inv_12_6(const std::string &coefsStr):potentialFunction(){
+        this->coefsInStr=coefsStr;
+    }
+
+public:
+    void json2Coefs(const std::string &coefsStr)override{
+        std::stringstream iss;
+        iss<<coefsStr;
+        std::string temp;
+        //read a1
+        if (std::getline(iss, temp, ',')){
+            this->a1=std::stod(temp);
+        }
+
+        //read b1
+
+        if (std::getline(iss, temp, ',')){
+            this->b1=std::stod(temp);
+        }
+
+        //read a2
+        if (std::getline(iss, temp, ',')){
+            this->a2=std::stod(temp);
+        }
+
+        //read b2
+
+        if (std::getline(iss, temp, ',')){
+            this->b2=std::stod(temp);
+        }
+    }
+
+    void init() override{
+        this->json2Coefs(coefsInStr);
+        this->r1=std::pow(2.0*a1/b1,1.0/6.0);
+        this->r2=std::pow(2.0*a2/b2,1.0/6.0);
+        this->lm=20.0*(r1+r2);
+        this->eps=lm/1000.0;
+        std::cout << "a1=" << a1 << ", b1=" << b1 << ", a2=" << a2 << ", b2=" << b2 << std::endl;
+        std::cout<<"r1="<<r1<<", r2="<<r2<<std::endl;
+        std::cout<<"lm="<<lm<<std::endl;
+        std::cout<<"eps="<<eps<<std::endl;
+    }
+
+
+    double operator()(const double &L, const double &y0, const double &z0, const double &y1) const override {
+
+        double val=a1/std::pow(y0,12)-b1/std::pow(y0,6)
+                +a2/std::pow(z0,12)-b2/std::pow(z0,6)
+                +a1/std::pow(y1,12)-b1/std::pow(y1,6)
+                +a2/std::pow(-y0-z0-y1+L,12)-b2/std::pow(-y0-z0-y1+L,6);
+        return val;
+    }
+    double getLm() const override {
+        return lm;
+    }
+    double get_eps() const override {
+        return eps;
+    }
+public:
+    double a1;
+    double a2;
+    double b1;
+    double b2;
+    std::string coefsInStr;
+    double r1;//min position of V1
+    double r2;//min position of V2
+    double lm;//range of distances
+    double eps;//half interval length of uniform distribution
+};
+
+std::shared_ptr<potentialFunction>  createPotentialFunction(const std::string& funcName, const std::string &coefsJsonStr) {
+    if (funcName == "V_inv_12_6") {
+
+        return std::make_shared<V_inv_12_6>(coefsJsonStr);
+    }
+
+    else {
+        throw std::invalid_argument("Unknown potential function type");
+    }
+}
