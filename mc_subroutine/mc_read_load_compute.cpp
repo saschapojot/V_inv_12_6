@@ -10,7 +10,7 @@
 /// @param rightEnd
 /// @param eps
 /// @return return a value within distance eps from x, on the open interval (leftEnd, rightEnd)
-double mc_computation::generate_uni_open_inteval(const double &x, const double &leftEnd, const double &rightEnd, const double &eps){
+double mc_computation::generate_uni_open_interval(const double &x, const double &leftEnd, const double &rightEnd, const double &eps){
 
 
 double xMinusEps=x-eps;
@@ -49,17 +49,82 @@ double unif_left_end_double_on_the_right=std::nextafter(unif_left_end, std::nume
 /// @param y0Next next value of y0
 /// @param z0Next next value of z0
 /// @param y1Next next value of y1
-void mc_computation::proposal(const double &LCurr, const double& y0Curr,const double& z0Curr, const double& y1Curr,
-              double & LNext, double & y0Next, double & z0Next, double & y1Next){
+bool mc_computation::proposal(const double &LCurr, const double& y0Curr,const double& z0Curr, const double& y1Curr,
+              double & LNext, double & y0Next, double & z0Next, double & y1Next, double &LReset){
 
     double eps=potFuncPtr->get_eps();
     double lm=potFuncPtr->getLm();
+    bool reset= false;
 
-    y0Next= generate_uni_open_inteval(y0Curr,0,LCurr,eps);
-    z0Next= generate_uni_open_inteval(z0Curr,0,LCurr,eps);
-    y1Next= generate_uni_open_inteval(y1Curr,0,LCurr,eps);
+    y0Next= generate_uni_open_interval(y0Curr,0,LCurr,eps);
+    z0Next= generate_uni_open_interval(z0Curr,0,LCurr,eps);
+    y1Next= generate_uni_open_interval(y1Curr,0,LCurr,eps);
+    //to prevent the case that LCurr<=y0Next+z0Next+y1Next,
+    //or the case that LCurr>=lm,
+    // we set LCurr in (y0Next+z0Next+y1Next, lm)
+    double LCurrReset=LCurr;
+    if(LCurr<=y0Next+z0Next+y1Next or LCurr>=lm) {
+        std::random_device rd;
+        std::ranlux24_base e2(rd());
+        double past_left = std::nextafter(y0Next + z0Next + y1Next, std::numeric_limits<double>::infinity());
+        std::uniform_real_distribution<> distUnif(past_left, lm);
+        LCurrReset = distUnif(e2);
+        reset= true;
 
-    LNext= generate_uni_open_inteval(LCurr,y0Next+z0Next+y1Next,lm,eps);
+        LReset=LCurrReset;
+
+    }
+
+    LNext= generate_uni_open_interval(LCurrReset,y0Next+z0Next+y1Next,lm,eps);
+    LReset=LCurrReset;
+    return reset;
+
+
+
+
+}
+
+
+////
+/// @param LCurr
+/// @param y0Curr
+/// @param z0Curr
+/// @param y1Curr
+/// @param UCurr
+/// @param LNext
+/// @param y0Next
+/// @param z0Next
+/// @param y1Next
+/// @param UNext
+/// @param LReset
+/// @return
+double mc_computation::acceptanceRatio(const double &LCurr,const double &y0Curr,
+                       const double &z0Curr, const double& y1Curr,const double& UCurr,
+                       const double &LNext, const double& y0Next,
+                       const double & z0Next, const double & y1Next,
+                       double &UNext,const double &LReset){
+    double eps=potFuncPtr->get_eps();
+    double lm=potFuncPtr->getLm();
+
+    UNext=((*potFuncPtr)(LNext,y0Next,z0Next,y1Next));
+    double numerator = -this->beta*UNext;
+
+    double denominator=-this->beta*UCurr;
+
+    double R=std::exp(numerator - denominator);
+
+    double ratioL= S(LReset,LNext,y0Next+z0Next+y1Next,lm,eps)/S(LNext,LReset,y0Next+z0Next+y1Next,lm,eps);
+
+    double ratio_y0=S(y0Curr,y0Next,0,LCurr,eps)/S(y0Next,y0Curr,0,LCurr,eps);
+
+    double ratio_z0=S(z0Curr,z0Next,0,LCurr,eps)/S(z0Next,z0Curr,0,LCurr,eps);
+
+    double  ratio_y1=S(y1Curr,y1Next,0,LCurr,eps)/S(y1Next,y1Curr,0,LCurr,eps);
+
+    R*=ratioL*ratio_y0*ratio_z0*ratio_y1;
+
+
+    return std::min(1.0,R);
 
 
 
@@ -68,26 +133,128 @@ void mc_computation::proposal(const double &LCurr, const double& y0Curr,const do
 
 
 ///
-/// @param LCurr
-/// @param y0Curr
-/// @param z0Curr
-/// @param y1Curr
-/// @param LNext
-/// @param y0Next
-/// @param z0Next
-/// @param y1Next
-/// @param UNext
-/// @return
-double mc_computation::acceptanceRatio(const double &LCurr,const double &y0Curr,
-                       const double &z0Curr, const double& y1Curr,const double& UCurr,
-                       const double &LNext, const double& y0Next,
-                       const double & z0Next, const double & y1Next,
-                       double &UNext){
+/// @param x proposed value
+/// @param y current value
+/// @param a left end of interval
+/// @param b right end of interval
+/// @param epsilon half length
+/// @return proposal probability S(x|y)
+double mc_computation::S(const double &x, const double &y,const double &a, const double &b, const double &epsilon){
 
-    UNext=((*potFuncPtr)(LNext,y0Next,z0Next,y1Next));
-    double numerator = -this->beta*UNext;
+    if (a<y and y<a+epsilon){
+        return 1.0/(y-a+epsilon);
+    } else if( a+epsilon<=y and y<b+epsilon){
+        return 1.0/(2.0*epsilon);
+    }else if(b-epsilon<=y and y<b){
+        return 1/(b-y+epsilon);
+    } else{
 
-    double denominator=-this->beta*UCurr;
+        std::cerr<<"value out of range."<<std::endl;
+        std::exit(10);
+
+
+    }
+
+
+}
+
+
+
+void mc_computation::execute_mc(const double& L,const double &y0, const double &z0, const double& y1, const size_t & loopInit, const size_t & flushNum){
+
+    double LCurr = L;
+    double y0Curr = y0;
+    double z0Curr = z0;
+    double y1Curr = y1;
+    std::cout<<"Before mc: "<<"LCurr="<<LCurr<<", y0Curr="<<y0Curr<<", z0Curr="<<z0Curr<<", y1Curr="<<y1Curr<<std::endl;
+    double UCurr;// = (*potFuncPtr)(LCurr, y0Curr, z0Curr, y1Curr);
+    std::random_device rd;
+    std::ranlux24_base e2(rd());
+    std::uniform_real_distribution<> distUnif01(0, 1);//[0,1)
+    size_t loopStart = loopInit;
+    for (size_t fls = 0; fls < flushNum; fls++) {
+        const auto tMCStart{std::chrono::steady_clock::now()};
+        for (size_t j = 0; j < loopToWrite; j++) {
+            //propose a move
+            double LNext;
+            double y0Next;
+            double z0Next;
+            double y1Next;
+            double LReset;
+
+            this->proposal(LCurr,y0Curr,z0Curr,y1Curr,LNext,y0Next,z0Next,y1Next,LReset);
+            double UNext;
+            double r= acceptanceRatio(LCurr,y0Curr,z0Curr,y1Curr,UCurr,LNext,y0Next,z0Next,y1Next,UNext,LReset);
+            double u = distUnif01(e2);
+            if (u <= r) {
+                LCurr = LNext;
+                y0Curr = y0Next;
+                z0Curr = z0Next;
+                y1Curr = y1Next;
+                UCurr = UNext;
+
+            }//end of accept-reject
+            U_dist_ptr[varNum*j+0]=UCurr;
+            U_dist_ptr[varNum*j+1]=LCurr;
+            U_dist_ptr[varNum*j+2]=y0Curr;
+            U_dist_ptr[varNum*j+3]=z0Curr;
+            U_dist_ptr[varNum*j+4]=y1Curr;
+        }//end for loop
+        size_t loopEnd = loopStart + loopToWrite - 1;
+        std::string fileNameMiddle = "loopStart" + std::to_string(loopStart) + "loopEnd" + std::to_string(loopEnd);
+        std::string out_U_distPickleFileName = this->U_dist_dataDir + "/" + fileNameMiddle + ".U_dist.csv";
+
+        //save U_dist_ptr
+        saveArrayToCSV(U_dist_ptr,varNum * loopToWrite,out_U_distPickleFileName,varNum);
+        const auto tMCEnd{std::chrono::steady_clock::now()};
+        const std::chrono::duration<double> elapsed_secondsAll{tMCEnd - tMCStart};
+        std::cout << "loop " + std::to_string(loopStart) + " to loop " + std::to_string(loopEnd) + ": "
+                  << elapsed_secondsAll.count() / 3600.0 << " h" << std::endl;
+
+        loopStart = loopEnd + 1;
+    }//end flush for loop
+
+    std::cout<<"mc executed for "<<flushNum<<" flushes."<<std::endl;
+
+
+}
+
+
+
+
+
+
+
+void mc_computation::saveArrayToCSV(const std::shared_ptr<double[]>& array, const  size_t& arraySize, const std::string& filename, const size_t& numbersPerRow) {
+
+    std::ofstream outFile(filename);
+
+    if (!outFile.is_open()) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+    outFile<<"U,"<<"L,"<<"y0,"<<"z0,"<<"y1"<<"\n";
+    for (size_t i = 0; i < arraySize; ++i) {
+        outFile << array[i];
+        if ((i + 1) % numbersPerRow == 0) {
+            outFile << '\n';
+        } else {
+            outFile << ',';
+        }
+    }
+
+    // If the last row isn't complete, end the line
+    if (arraySize % numbersPerRow != 0) {
+        outFile << '\n';
+    }
+
+    outFile.close();
+
+
+}
+
+void mc_computation::init_and_run(){
+    this->execute_mc(LInit,y0Init,z0Init,y1Init,loopLastFile+1,newFlushNum);
 
 
 }

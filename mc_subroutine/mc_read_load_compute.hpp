@@ -56,7 +56,7 @@ public:
                 this->beta = 1 / T;
                 double stepForT1 = 0.1;
                 this->h = stepForT1 * T > 0.2 ? 0.2 : stepForT1 * T;//stepSize;
-                std::cout << "h=" << h << std::endl;
+//                std::cout << "h=" << h << std::endl;
                 paramCounter++;
                 continue;
             }//end reading T
@@ -175,7 +175,7 @@ public:
     /// @param rightEnd
     /// @param eps
     /// @return return a value within distance eps from x, on the open interval (leftEnd, rightEnd)
-   double generate_uni_open_inteval(const double &x, const double &leftEnd, const double &rightEnd, const double &eps);
+   double generate_uni_open_interval(const double &x, const double &leftEnd, const double &rightEnd, const double &eps);
 
 
 
@@ -188,8 +188,9 @@ public:
     /// @param y0Next next value of y0
     /// @param z0Next next value of z0
     /// @param y1Next next value of y1
-    void proposal(const double &LCurr, const double& y0Curr,const double& z0Curr, const double& y1Curr,
-                  double & LNext, double & y0Next, double & z0Next, double & y1Next);
+    /// @param LReset current value resetted
+    bool proposal(const double &LCurr, const double& y0Curr,const double& z0Curr, const double& y1Curr,
+                  double & LNext, double & y0Next, double & z0Next, double & y1Next, double &LReset);
 
 
     ///
@@ -197,18 +198,36 @@ public:
     /// @param y0Curr
     /// @param z0Curr
     /// @param y1Curr
+    /// @param UCurr
     /// @param LNext
     /// @param y0Next
     /// @param z0Next
     /// @param y1Next
     /// @param UNext
+    /// @param LReset
     /// @return
     double acceptanceRatio(const double &LCurr,const double &y0Curr,
                            const double &z0Curr, const double& y1Curr,const double& UCurr,
                            const double &LNext, const double& y0Next,
                            const double & z0Next, const double & y1Next,
-                           double &UNext);
+                           double &UNext,const double &LReset);
+    ///
+    /// @param x proposed value
+    /// @param y current value
+    /// @param a left end of interval
+    /// @param b right end of interval
+    /// @param epsilon half length
+    /// @return proposal probability S(x|y)
+    double S(const double &x, const double &y,const double &a, const double &b, const double &epsilon);
 
+
+
+    void execute_mc(const double& L,const double &y0, const double &z0, const double& y1, const size_t & loopInit, const size_t & flushNum);
+
+
+    static void saveArrayToCSV(const std::shared_ptr<double[]>& array, const  size_t& arraySize, const std::string& filename, const size_t& numbersPerRow) ;
+
+    void init_and_run();
 
 public:
     double T;// temperature
