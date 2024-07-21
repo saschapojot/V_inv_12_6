@@ -10,7 +10,7 @@ from datetime import datetime
 #this script generates data
 a=1
 
-b=4
+b=2
 
 def f(x):
     return -4/(b-a)**2*(x-a)*(x-b)
@@ -107,10 +107,10 @@ def save2csv(xVec, outCsvName):
 outPath="./testS/"
 Path(outPath).mkdir(exist_ok=True,parents=True)
 
-flushNum=8
+flushNum=50
 loop_to_write=1000000
 
-eps=(b-a)/50
+eps=(b-a)/30
 
 #init x
 xCurr=a+(b-a)/1.4321
