@@ -48,7 +48,7 @@ public:
         std::cout << "a1=" << a1 << ", b1=" << b1 << ", a2=" << a2 << ", b2=" << b2 << std::endl;
         std::cout<<"r1="<<r1<<", r2="<<r2<<std::endl;
         std::cout<<"lm="<<lm<<std::endl;
-        std::cout<<"eps="<<eps<<std::endl;
+//        std::cout<<"eps="<<eps<<std::endl;
 
 
     }

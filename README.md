@@ -4,3 +4,6 @@
 4. python check_after_one_run.py path/to/xxx.mc.conf
 
 repeat the above steps until enough data points are collected
+
+Note that the step length h should be large at first, then decrease the value
+of h in later runs.

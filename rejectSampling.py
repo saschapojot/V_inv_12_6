@@ -14,6 +14,7 @@ b=3.1
 
 
 xi=a+0.5
+xStart=a-0.1
 
 def Q(y):
     """
@@ -56,7 +57,7 @@ def genOneData():
     return y
 
 
-loopToWrite=10000
+loopToWrite=100
 xjAll=[genOneData() for j in range(0,loopToWrite)]
 
 xPltAll=np.linspace(a,b,5000)
