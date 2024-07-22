@@ -44,11 +44,13 @@ public:
         this->r1=std::pow(2.0*a1/b1,1.0/6.0);
         this->r2=std::pow(2.0*a2/b2,1.0/6.0);
         this->lm=5*(r1+r2);
-        this->eps=((r1+r2)/2.0)/6;
+        this->eps=((r1+r2)/2.0)/8;
         std::cout << "a1=" << a1 << ", b1=" << b1 << ", a2=" << a2 << ", b2=" << b2 << std::endl;
         std::cout<<"r1="<<r1<<", r2="<<r2<<std::endl;
         std::cout<<"lm="<<lm<<std::endl;
         std::cout<<"eps="<<eps<<std::endl;
+
+
     }
 
 
@@ -58,6 +60,7 @@ public:
                 +a2/std::pow(z0,12)-b2/std::pow(z0,6)
                 +a1/std::pow(y1,12)-b1/std::pow(y1,6)
                 +a2/std::pow(-y0-z0-y1+L,12)-b2/std::pow(-y0-z0-y1+L,6);
+//        std::cout<<"val="<<std::endl;
         return val;
     }
     double getLm() const override {

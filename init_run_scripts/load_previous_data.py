@@ -28,10 +28,10 @@ startingVecPosition=jsonFromSummary["startingVecPosition"]
 #give arbitrary values to L, y0, z0, y1 without reading data
 UInit=6
 
-y0Init=2
-z0Init=3
-y1Init=4
-LInit=y0Init+z0Init+y1Init+2
+y0Init=1
+z0Init=1
+y1Init=1
+LInit=y0Init+z0Init+y1Init+0.7
 
 loopLastFile=-1
 

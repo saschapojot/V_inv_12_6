@@ -21,7 +21,7 @@ sortedLpEndInds=np.argsort(loopEndAll)
 sortedCsvFilesAll=[csvFileNamesAll[ind] for ind in sortedLpEndInds]
 # print(sortedCsvFilesAll)
 
-plt_name="y0"
+plt_name="L"
 
 vec=np.array([])
 
