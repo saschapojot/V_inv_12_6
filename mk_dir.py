@@ -4,7 +4,7 @@ import pandas as pd
 
 
 #This script creates directories and conf files for mc
-TVals=[1,2]+[5*n for n in range(1,7)]+[200]
+TVals=[1,2]+[5*n for n in range(1,7)]
 rowNum=0
 inParamFileName="./V_inv_12_6Params.csv"
 
