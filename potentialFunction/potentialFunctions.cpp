@@ -55,12 +55,17 @@ public:
 
 
     double operator()(const double &L, const double &y0, const double &z0, const double &y1) const override {
+//        std::cout<<"L="<<L<<", y0="<<y0<<", z0="<<z0<<", y1="<<y1<<std::endl;
+        double val=a1/std::pow(y0,12.0)-b1/std::pow(y0,6.0)
+                +a2/std::pow(z0,12.0)-b2/std::pow(z0,6.0)
+                +a1/std::pow(y1,12.0)-b1/std::pow(y1,6.0)
+                +a2/std::pow(-y0-z0-y1+L,12.0)-b2/std::pow(-y0-z0-y1+L,6.0);
 
-        double val=a1/std::pow(y0,12)-b1/std::pow(y0,6)
-                +a2/std::pow(z0,12)-b2/std::pow(z0,6)
-                +a1/std::pow(y1,12)-b1/std::pow(y1,6)
-                +a2/std::pow(-y0-z0-y1+L,12)-b2/std::pow(-y0-z0-y1+L,6);
-//        std::cout<<"val="<<std::endl;
+//        std::cout<<"a1/std::pow(y0,12.0)-b1/std::pow(y0,6.0)="<<a1/std::pow(y0,12.0)-b1/std::pow(y0,6.0)<<std::endl;
+//        std::cout<<"a2/std::pow(z0,12.0)-b2/std::pow(z0,6.0)="<<a2/std::pow(z0,12.0)-b2/std::pow(z0,6.0)<<std::endl;
+//        std::cout<<"a1/std::pow(y1,12.0)-b1/std::pow(y1,6.0)="<<a1/std::pow(y1,12.0)-b1/std::pow(y1,6.0)<<std::endl;
+//        std::cout<<"a2/std::pow(-y0-z0-y1+L,12.0)-b2/std::pow(-y0-z0-y1+L,6.0)="<<a2/std::pow(-y0-z0-y1+L,12.0)-b2/std::pow(-y0-z0-y1+L,6.0)<<std::endl;
+//        std::cout<<"val="<<val<<std::endl;
         return val;
     }
     double getLm() const override {

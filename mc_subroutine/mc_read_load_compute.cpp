@@ -184,6 +184,7 @@ void mc_computation::execute_mc(const double& L,const double &y0, const double &
 
             this->proposal(LCurr,y0Curr,z0Curr,y1Curr,LNext,y0Next,z0Next,y1Next,LReset);
             double UNext;
+            UCurr=((*potFuncPtr))(LReset,y0Curr,z0Curr,y1Curr);
             double r= acceptanceRatio(LCurr,y0Curr,z0Curr,y1Curr,UCurr,LNext,y0Next,z0Next,y1Next,UNext,LReset);
             double u = distUnif01(e2);
             if (u <= r) {
@@ -233,6 +234,8 @@ void mc_computation::saveArrayToCSV(const std::shared_ptr<double[]>& array, cons
         std::cerr << "Error opening file: " << filename << std::endl;
         return;
     }
+    outFile << std::setprecision(std::numeric_limits<double>::digits10 + 1) << std::fixed;
+
     outFile<<"U,"<<"L,"<<"y0,"<<"z0,"<<"y1"<<"\n";
     for (size_t i = 0; i < arraySize; ++i) {
         outFile << array[i];
@@ -374,17 +377,17 @@ bool mc_computation::proposal(const double &LCurr, const double& y0Curr,const do
     //or the case that LCurr>=lm,
     // we set LCurr in (y0Next+z0Next+y1Next, lm)
     double LCurrReset = LCurr;
-    if (LCurr <= y0Next + z0Next + y1Next or LCurr >= lm) {
-        std::random_device rd;
-        std::ranlux24_base e2(rd());
-        double past_left = std::nextafter(y0Next + z0Next + y1Next, std::numeric_limits<double>::infinity());
-        std::uniform_real_distribution<> distUnif(past_left, lm);
-        LCurrReset = distUnif(e2);
-        reset = true;
-
-        LReset = LCurrReset;
-
-    }
+//    if (LCurr <= y0Next + z0Next + y1Next or LCurr >= lm) {
+//        std::random_device rd;
+//        std::ranlux24_base e2(rd());
+//        double past_left = std::nextafter(y0Next + z0Next + y1Next, std::numeric_limits<double>::infinity());
+//        std::uniform_real_distribution<> distUnif(past_left, lm);
+//        LCurrReset = distUnif(e2);
+//        reset = true;
+//
+//        LReset = LCurrReset;
+//
+//    }
     LReset = LCurrReset;
     LNext = reject_sampling_one_data(LCurrReset, y0Next + z0Next + y1Next, lm);
 

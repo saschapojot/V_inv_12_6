@@ -49,17 +49,17 @@ def S(y):
 print(quad(S,a,b))
 
 def genOneData():
-    y=np.random.normal(xi,sigma,1)[0]
+    y=np.random.normal(xStart,sigma,1)[0]
     u=np.random.uniform(0,1)
     while u>=f(y)/(M*Q(y)):
-        y=np.random.normal(xi,sigma,1)[0]
+        y=np.random.normal(xStart,sigma,1)[0]
         u=np.random.uniform(0,1)
     return y
 
 
 loopToWrite=100
 xjAll=[genOneData() for j in range(0,loopToWrite)]
-
+print(np.min(xjAll))
 xPltAll=np.linspace(a,b,5000)
 densityAll=[S(x)  for x in xPltAll]
 

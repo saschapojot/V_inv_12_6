@@ -55,8 +55,10 @@ public:
                 }//end if
                 std::cout << "T=" << T << std::endl;
                 this->beta = 1 / T;
-                double stepForT1 = 0.005;
-                this->h = stepForT1 * T > 0.2 ? 0.2 : stepForT1 * T;//stepSize;
+                double stepForT1 = 0.1;
+                double h_threshhold=0.01;
+                this->h=h_threshhold;
+//                this->h = stepForT1 * T > h_threshhold ? h_threshhold : stepForT1 * T;//stepSize;
                 std::cout << "h=" << h << std::endl;
                 this->M = std::pow(2.0 * PI, 0.5) * h * 1.001;
                 std::cout<<"M="<<M<<std::endl;
