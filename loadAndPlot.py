@@ -6,7 +6,7 @@ import re
 import matplotlib.pyplot as plt
 import pandas as pd
 
-dataPath="./dataAll/row0/T2/U_dist_dataFiles/"
+dataPath="./dataAll/row0/T10/U_dist_dataFiles/"
 
 csvFileNamesAll=[]
 loopEndAll=[]
@@ -32,7 +32,7 @@ for file in sortedCsvFilesAll:
 
 
 
-startingInd=int(len(vec)*2/3)
+startingInd=int(len(vec)*3.8/4)
 plt_vec=vec[startingInd:]
 plt.figure()
 plt.plot(plt_vec,color="black")

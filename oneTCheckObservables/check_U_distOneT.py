@@ -89,7 +89,7 @@ def checkU_distDataFilesForOneT(U_dist_csv_dir):
 
     if startingFileInd<0:
         #we guess that the equilibrium starts at this file
-        startingFileInd=int(len(U_dist_sortedDataFilesToRead)*3/5)
+        startingFileInd=int(len(U_dist_sortedDataFilesToRead)*5/7)
     startingFileName=U_dist_sortedDataFilesToRead[startingFileInd]
     # print(startingFileName)
     #read the starting U_dist csv file
