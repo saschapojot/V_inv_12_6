@@ -6,6 +6,7 @@
 #define V_INV_12_6_MC_READ_LOAD_COMPUTE_HPP
 #include "../potentialFunction/potentialFunctionPrototype.hpp"
 #include <boost/filesystem.hpp>
+#include <boost/math/quadrature/trapezoidal.hpp>
 #include <chrono>
 #include <cstdlib>
 #include <cxxabi.h>
@@ -23,7 +24,7 @@
 #include <vector>
 
 namespace fs = boost::filesystem;
-
+const auto PI=M_PI;
 
 
 class mc_computation {
@@ -54,9 +55,11 @@ public:
                 }//end if
                 std::cout << "T=" << T << std::endl;
                 this->beta = 1 / T;
-                double stepForT1 = 0.1;
+                double stepForT1 = 0.005;
                 this->h = stepForT1 * T > 0.2 ? 0.2 : stepForT1 * T;//stepSize;
-//                std::cout << "h=" << h << std::endl;
+                std::cout << "h=" << h << std::endl;
+                this->M = std::pow(2.0 * PI, 0.5) * h * 1.001;
+                std::cout<<"M="<<M<<std::endl;
                 paramCounter++;
                 continue;
             }//end reading T
@@ -169,14 +172,14 @@ public:
 
 
 public:
-    ///
-    /// @param x
-    /// @param leftEnd
-    /// @param rightEnd
-    /// @param eps
-    /// @return return a value within distance eps from x, on the open interval (leftEnd, rightEnd)
-   double generate_uni_open_interval(const double &x, const double &leftEnd, const double &rightEnd, const double &eps);
-
+//    ///
+//    /// @param x
+//    /// @param leftEnd
+//    /// @param rightEnd
+//    /// @param eps
+//    /// @return return a value within distance eps from x, on the open interval (leftEnd, rightEnd)
+//   double generate_uni_open_interval(const double &x, const double &leftEnd, const double &rightEnd, const double &eps);
+//
 
 
     ///
@@ -211,16 +214,52 @@ public:
                            const double &LNext, const double& y0Next,
                            const double & z0Next, const double & y1Next,
                            double &UNext,const double &LReset);
+//    ///
+//    /// @param x proposed value
+//    /// @param y current value
+//    /// @param a left end of interval
+//    /// @param b right end of interval
+//    /// @param epsilon half length
+//    /// @return proposal probability S(x|y)
+//    double S(const double &x, const double &y,const double &a, const double &b, const double &epsilon);
+
     ///
-    /// @param x proposed value
-    /// @param y current value
-    /// @param a left end of interval
-    /// @param b right end of interval
-    /// @param epsilon half length
-    /// @return proposal probability S(x|y)
-    double S(const double &x, const double &y,const double &a, const double &b, const double &epsilon);
+/// @param y
+/// @param x center
+/// @param a left end
+///@param b right end
+/// @return known proposal function, which is normal distribution
+    double Q(const double &y, const double &x, const double &a, const double &b);
 
+    ///
+    /// @param y
+    /// @param x center
+    /// @param a left end
+    /// @param b right end
+    /// @return truncated Gaussian
+    double f(const double &y, const double &x, const double &a, const double &b);
 
+    ///
+    /// @param x center
+    /// @param a left end
+    /// @param b right end
+    /// @return random number from truncated Gaussian
+    double reject_sampling_one_data(const double &x,const double &a, const double &b);
+
+    ///
+    /// @param x center
+    /// @param a left end
+    /// @param b right end
+    /// @return integral
+    double zVal(const double& x,const double &a, const double &b);
+
+    ///
+    /// @param y
+    /// @param x center
+    /// @param a left end
+    /// @param b right end
+    /// @return
+    double integrand(const double &y, const double& x,const double &a, const double &b);
 
     void execute_mc(const double& L,const double &y0, const double &z0, const double& y1, const size_t & loopInit, const size_t & flushNum);
 
@@ -247,6 +286,7 @@ public:
     double y1Init;
     std::string coefsToPotFunc;
     std::string potFuncName;
+    double M;
 
 };
 

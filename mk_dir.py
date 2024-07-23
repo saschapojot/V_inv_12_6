@@ -74,7 +74,7 @@ def contents_to_conf(k):
         "\n",
         "#within each flush,  loop_to_write mc computations are executed\n",
         "\n",
-        "default_flush_num=26\n"
+        "default_flush_num=6\n"
 
 
 

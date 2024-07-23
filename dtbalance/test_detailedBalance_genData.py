@@ -107,7 +107,7 @@ def save2csv(xVec, outCsvName):
 outPath="./testS/"
 Path(outPath).mkdir(exist_ok=True,parents=True)
 
-flushNum=50
+flushNum=5
 loop_to_write=1000000
 
 eps=(b-a)/30
