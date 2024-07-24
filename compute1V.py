@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 
 #This script checks one data point and compute energy
 #and make plots
-L=4.59871
-y0=0.974317
-z0=1.02131
-y1=1.61761
+#with other properties of the potential function
+
+L=3.60107824046853
+y0=0.473276564260906
+z0=0.508621001374069
+y1=1.0860438273727
 
 inCsvFile="./V_inv_12_6Params.csv"
 
@@ -19,10 +21,10 @@ a1=float(row0.loc["a1"])
 b1=float(row0.loc["b1"])
 a2=float(row0.loc["a2"])
 b2=float(row0.loc["b2"])
-print("a1="+str(a1))
-print("b1="+str(b1))
-print("a2="+str(a2))
-print("b2="+str(b2))
+# print("a1="+str(a1))
+# print("b1="+str(b1))
+# print("a2="+str(a2))
+# print("b2="+str(b2))
 
 def V(LVal,y0Val,z0Val,y1Val):
     val=a1/y0Val**12-b1/y0Val**6\
@@ -31,11 +33,11 @@ def V(LVal,y0Val,z0Val,y1Val):
     +a2/(-y0Val-z0Val-y1Val+LVal)**12\
     -b2/(-y0Val-z0Val-y1Val+LVal)**6
 
-    print("a1/y0Val**12-b1/y0Val**6="+str(a1/y0Val**12-b1/y0Val**6))
-    print("a2/z0Val**12-b2/z0Val**6="+str(a2/z0Val**12-b2/z0Val**6))
-    print("a1/y1Val**12-b1/y1Val**6="+str(a1/y1Val**12-b1/y1Val**6))
-    print("a2/(-y0Val-z0Val-y1Val+LVal)**12-b2/(-y0Val-z0Val-y1Val+LVal)**6="+str(a2/(-y0Val-z0Val-y1Val+LVal)**12 \
-                                                                                 -b2/(-y0Val-z0Val-y1Val+LVal)**6))
+    # print("a1/y0Val**12-b1/y0Val**6="+str(a1/y0Val**12-b1/y0Val**6))
+    # print("a2/z0Val**12-b2/z0Val**6="+str(a2/z0Val**12-b2/z0Val**6))
+    # print("a1/y1Val**12-b1/y1Val**6="+str(a1/y1Val**12-b1/y1Val**6))
+    # print("a2/(-y0Val-z0Val-y1Val+LVal)**12-b2/(-y0Val-z0Val-y1Val+LVal)**6="+str(a2/(-y0Val-z0Val-y1Val+LVal)**12 \
+    #                                                                              -b2/(-y0Val-z0Val-y1Val+LVal)**6))
     return val
 
 
@@ -61,7 +63,7 @@ r2=(2*a2/b2)**(1/6)
 
 
 
-rV1ValsAll=np.linspace(r1*0.9,3.5*r1,100)
+rV1ValsAll=np.linspace(r1*0.9,2.5*r1,100)
 V1ValsAll=[V1(r) for r in rV1ValsAll]
 
 plt.figure()
@@ -85,4 +87,4 @@ plt.savefig("V2.png")
 
 plt.close()
 
-print(2*(r1+r2))
+
