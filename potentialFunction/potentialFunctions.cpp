@@ -43,7 +43,7 @@ public:
         this->json2Coefs(coefsInStr);
         this->r1=std::pow(2.0*a1/b1,1.0/6.0);
         this->r2=std::pow(2.0*a2/b2,1.0/6.0);
-        this->lm=(2*(r1+r2))*2.5;
+        this->lm=(2*(r1+r2))*1.5;
         this->eps=((r1+r2)/2.0)/8;
         std::cout << "a1=" << a1 << ", b1=" << b1 << ", a2=" << a2 << ", b2=" << b2 << std::endl;
         std::cout<<"r1="<<r1<<", r2="<<r2<<std::endl;
