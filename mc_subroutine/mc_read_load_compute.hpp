@@ -6,6 +6,7 @@
 #define V_INV_12_6_MC_READ_LOAD_COMPUTE_HPP
 #include "../potentialFunction/potentialFunctionPrototype.hpp"
 #include <boost/filesystem.hpp>
+
 #include <boost/math/quadrature/trapezoidal.hpp>
 #include <chrono>
 #include <cstdlib>
@@ -107,8 +108,6 @@ public:
 
             //read loopToWrite
             if(paramCounter==4){
-                //if loopLastFileStr is "-1", loopLastFile uses the overflowed value
-                //and loopLastFile+1 will be 0
                 iss>>loopToWrite;
                 paramCounter++;
                 continue;
@@ -123,6 +122,8 @@ public:
 
             //read loopLastFile
             if(paramCounter==6){
+                //if loopLastFileStr is "-1", loopLastFile uses the overflowed value
+                //and loopLastFile+1 will be 0
                 iss>>loopLastFile;
                 paramCounter++;
                 continue;
