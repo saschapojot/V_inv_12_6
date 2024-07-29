@@ -79,6 +79,7 @@ def pltU_dist(oneTFile):
     axU=fig.add_subplot()
     (n0,_,_)=axU.hist(UVec,bins=nbins)
     meanU=np.round(meanU,4)
+    print("T="+str(TVal)+", E(U)="+str(meanU))
     sigmaU=np.round(sigmaU,4)
 
     axU.set_title("T="+str(TVal))

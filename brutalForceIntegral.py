@@ -30,7 +30,7 @@ def V(L, y0, z0, y1):
 r1=(2*a1/b1)**(1/6)
 r2=(2*a2/b2)**(1/6)
 
-eps=(r1+r1)/30
+eps=(r1+r1)/20
 
 y0Range=[r1-eps,r1+eps]
 
@@ -45,7 +45,7 @@ def Z(L, y0, z0, y1, beta):
     return np.exp(-beta * V(L, y0, z0, y1))
 
 
-T=0.5
+T=1
 beta = 1/T
 result, error = integrate.nquad(lambda L, y0, z0, y1: Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
 
@@ -54,6 +54,9 @@ print("Estimated error:", error)
 
 
 rstV,errV=integrate.nquad(lambda  L, y0, z0, y1: V(L, y0, z0, y1)*Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
+
+print("Integral result of V:", rstV)
+print("Estimated error of EV:", errV)
 
 EV=rstV/result-shift
 print(EV)
