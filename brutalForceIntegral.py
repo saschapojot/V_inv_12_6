@@ -1,19 +1,20 @@
 import numpy as np
 import scipy.integrate as integrate
-# import pandas as pd
+import pandas as pd
+from datetime import datetime
 #this script benchmarks the mc computation by brutal force integration
 
 rowNum=0
 inParamFileName="./V_inv_12_6Params.csv"
 
-# inDf=pd.read_csv(inParamFileName)
-# oneRow=inDf.iloc[rowNum,:]
-a1=25
-b1=80
-a2=15
-b2=67
+inDf=pd.read_csv(inParamFileName)
+oneRow=inDf.iloc[rowNum,:]
+a1=float(oneRow.loc["a1"])
+b1=float(oneRow.loc["b1"])
+a2=float(oneRow.loc["a2"])
+b2=float(oneRow.loc["b2"])
 
-shift=265
+shift=271
 
 def V(L, y0, z0, y1):
     # L, y0, z0, y1 = x
@@ -42,6 +43,7 @@ LRange=[2*r1+2*r2-eps,2*r1+2*r2+eps]
 def Z(L, y0, z0, y1, beta):
     #
     return np.exp(-beta * V(L, y0, z0, y1))
+
 
 T=0.5
 beta = 1/T

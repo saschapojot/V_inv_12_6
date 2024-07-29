@@ -370,9 +370,9 @@ bool mc_computation::proposal(const double &LCurr, const double& y0Curr,const do
     //proposal using truncated Gaussian
     double lm = potFuncPtr->getLm();
     bool reset = false;
-    y0Next = reject_sampling_one_data(y0Curr, 0, LCurr);
-    z0Next = reject_sampling_one_data(z0Curr, 0, LCurr);
-    y1Next = reject_sampling_one_data(y1Curr, 0, LCurr);
+    y0Next = reject_sampling_one_data(y0Curr, 0, lm);
+    z0Next = reject_sampling_one_data(z0Curr, 0, lm);
+    y1Next = reject_sampling_one_data(y1Curr, 0, lm);
     //to prevent the case that LCurr<=y0Next+z0Next+y1Next,
     //or the case that LCurr>=lm,
     // we set LCurr in (y0Next+z0Next+y1Next, lm)
@@ -389,7 +389,7 @@ bool mc_computation::proposal(const double &LCurr, const double& y0Curr,const do
 //
 //    }
     LReset = LCurrReset;
-    LNext = reject_sampling_one_data(LCurrReset, y0Next + z0Next + y1Next, lm);
+    LNext = reject_sampling_one_data(LCurr, 0, lm);
 
     return reset;
 
@@ -422,24 +422,24 @@ double mc_computation::acceptanceRatio(const double &LCurr,const double &y0Curr,
     double denominator=-this->beta*UCurr;
     double R=std::exp(numerator - denominator);
 
-    double zLCurr= zVal(LReset,y0Next+z0Next+y1Next,lm);
-    double zLNext= zVal(LNext,y0Next+z0Next+y1Next,lm);
+    double zLCurr= zVal(LCurr,0,lm);
+    double zLNext= zVal(LNext,0,lm);
 
     double ratio_L=zLCurr/zLNext;
 
 
-    double zy0Curr= zVal(y0Curr,0,LCurr);
-    double zy0Next= zVal(y0Next,0,LCurr);
+    double zy0Curr= zVal(y0Curr,0,lm);
+    double zy0Next= zVal(y0Next,0,lm);
 
     double ratio_y0=zy0Curr/zy0Next;
 
-    double zz0Curr= zVal(z0Curr,0,LCurr);
-    double zz0Next= zVal(z0Next,0,LCurr);
+    double zz0Curr= zVal(z0Curr,0,lm);
+    double zz0Next= zVal(z0Next,0,lm);
 
     double ratio_z0=zz0Curr/zz0Next;
 
-    double zy1Curr= zVal(y1Curr,0,LCurr);
-    double zy1Next= zVal(y0Next,0,LCurr);
+    double zy1Curr= zVal(y1Curr,0,lm);
+    double zy1Next= zVal(y0Next,0,lm);
 
     double ratio_y1=zy1Curr/zy1Next;
 
