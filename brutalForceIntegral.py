@@ -14,7 +14,7 @@ b1=float(oneRow.loc["b1"])
 a2=float(oneRow.loc["a2"])
 b2=float(oneRow.loc["b2"])
 
-shift=271
+shift=276
 
 def V(L, y0, z0, y1):
     # L, y0, z0, y1 = x
@@ -44,37 +44,37 @@ def Z(L, y0, z0, y1, beta):
     #
     return np.exp(-beta * V(L, y0, z0, y1))
 
-
+tZStart=datetime.now()
 T=1
 beta = 1/T
 result, error = integrate.nquad(lambda L, y0, z0, y1: Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
 
-print("Integral result:", result)
-print("Estimated error:", error)
+print("Z Integral result:", result)
+print("Z Estimated error:", error)
+tZEnd=datetime.now()
+print("Z time: ",tZEnd-tZStart)
+#####################################
+##E(V)
 
-
+tVStart=datetime.now()
 rstV,errV=integrate.nquad(lambda  L, y0, z0, y1: V(L, y0, z0, y1)*Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
 
-print("Integral result of V:", rstV)
-print("Estimated error of EV:", errV)
-
+print("V Integral result:", rstV)
+print("V Estimated error:", errV)
+tVEnd=datetime.now()
+print("V time: ",tVEnd-tVStart)
 EV=rstV/result-shift
-print(EV)
-# limits =[LRange,y0Range,z0Range,y1Range]
-# # Define the integrand with the beta parameter
-# integrandZ = lambda x: Z(x, beta)
-#
-# # Perform the 4-dimensional integral using vegas
-# integ = vegas.Integrator(limits)
-# result = integ(integrandZ, nitn=100, neval=100000)
+print("E(V)="+str(EV))
+#####################################
+#####################################
+## E(L)
+tLStart=datetime.now()
+rstL,errL=integrate.nquad(lambda  L, y0, z0, y1: L*Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
+print("L Integral result:", rstL)
+print("L Estimated error:", errL)
+tLEnd=datetime.now()
+print("L time: ",tLEnd-tLStart)
+EL=rstL/result
+print("E(L)="+str(EL))
 
-# print("Integral result:", result.mean)
-# print("Estimated error:", result.sdev)
-
-# integrandV=lambda x: V(x)*Z(x,beta)
-#
-# rstV=integ(integrandV,nitn=100, neval=100000)
-#
-# EV=rstV.mean/result.mean-shift
-#
-# print(EV)
+#####################################

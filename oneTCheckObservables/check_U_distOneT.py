@@ -282,7 +282,7 @@ def checkU_distDataFilesForOneT(U_dist_csv_dir):
         exit(0)
 
     else:
-        highMsg="high correlation"
+        msg="high correlation"
         with open(summary_U_distFile,"w+") as fptr:
             fptr.writelines(msg)
         exit(0)
