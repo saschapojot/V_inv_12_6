@@ -15,7 +15,7 @@ b1=float(oneRow.loc["b1"])
 a2=float(oneRow.loc["a2"])
 b2=float(oneRow.loc["b2"])
 
-shift=271
+shift=276
 
 def V(L, y0, z0, y1):
     # L, y0, z0, y1 = x
@@ -45,46 +45,39 @@ def Z(L, y0, z0, y1, beta):
     #
     return np.exp(-beta * V(L, y0, z0, y1))
 
-
+tZStart=datetime.now()
 T=1
 beta = 1/T
-# result, error = integrate.nquad(lambda L, y0, z0, y1: Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
-#
-# print("Integral result:", result)
-# print("Estimated error:", error)
 
+result, error = integrate.nquad(lambda L, y0, z0, y1: Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
 
-# rstV,errV=integrate.nquad(lambda  L, y0, z0, y1: V(L, y0, z0, y1)*Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
-#
-# print("Integral result of V:", rstV)
-# print("Estimated error of EV:", errV)
-#
-# EV=rstV/result-shift
-# print(EV)
-def ZIntVal(T):
-    beta = 1/T
-    result, error = integrate.nquad(lambda L, y0, z0, y1: Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
-    return [result,error]
+print("Z Integral result:", result)
+print("Z Estimated error:", error)
+tZEnd=datetime.now()
+print("Z time: ",tZEnd-tZStart)
+#####################################
+##E(V)
 
+tVStart=datetime.now()
+rstV,errV=integrate.nquad(lambda  L, y0, z0, y1: V(L, y0, z0, y1)*Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
 
-TVals=[0.1,0.3]
-ZVals=[]
-errVals=[]
-tIntStart=datetime.now()
-for T in TVals:
-    rst,err=ZIntVal(T)
-    ZVals.append(rst)
-    errVals.append(err)
+print("V Integral result:", rstV)
+print("V Estimated error:", errV)
+tVEnd=datetime.now()
+print("V time: ",tVEnd-tVStart)
+EV=rstV/result-shift
+print("E(V)="+str(EV))
+#####################################
+#####################################
+## E(L)
+tLStart=datetime.now()
+rstL,errL=integrate.nquad(lambda  L, y0, z0, y1: L*Z(L, y0, z0, y1, beta), [LRange, y0Range, z0Range, y1Range])
+print("L Integral result:", rstL)
+print("L Estimated error:", errL)
+tLEnd=datetime.now()
+print("L time: ",tLEnd-tLStart)
+EL=rstL/result
+print("E(L)="+str(EL))
 
+#####################################
 
-tIntEnd=datetime.now()
-
-outData={"T":list(TVals),
-         "Z":list(ZVals),
-         "err":list(errVals),
-         "shift":str(shift)}
-
-fileName="T"+str(TVals[0])+"_"+str(TVals[-1])+"Z.json"
-
-with open(fileName,"w+") as fptr:
-    json.dump(outData,fptr,indent=4)
