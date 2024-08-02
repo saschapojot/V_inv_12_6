@@ -135,6 +135,7 @@ def pltU_dist(oneTFile):
     LMean=np.mean(LVec)
     LVar=np.var(LVec,ddof=1)
     LConfHalfLength=np.sqrt(LVar/len(LVec))
+    print("E(L)="+str(LMean))
 
     d0A0BVec=[]#y0
     d0B1AVec=[]#z0
