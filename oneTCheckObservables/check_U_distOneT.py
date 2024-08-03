@@ -185,8 +185,8 @@ def checkU_distDataFilesForOneT(U_dist_csv_dir):
     # print(minAutcz0)
     # print(minAutcy1)
     # print(minAutcU)
-    if minAutcL<eps and minAutcy0< eps \
-            and minAutcz0<eps and minAutcy1<eps and minAutcU<eps:
+    if minAutcL<=eps and minAutcy0<= eps \
+            and minAutcz0<=eps and minAutcy1<=eps and minAutcU<=eps:
         lagL=np.where(acfOfVecLAbs<=eps)[0][0]
 
         lagy0=np.where(acfOfVecy0Abs<=eps)[0][0]
